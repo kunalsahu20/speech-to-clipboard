@@ -2,6 +2,22 @@
   "name": "speech-to-cursor",
   "version": "1.0.0",
   "description": "System tray tool — record speech, transcribe with Groq Whisper + LLM, paste at cursor",
+  "author": "Kunal Sahu",
+  "license": "MIT",
+  "homepage": "https://github.com/kunalsahu20/speech-to-clipboard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kunalsahu20/speech-to-clipboard.git"
+  },
+  "keywords": [
+    "speech-to-text",
+    "transcription",
+    "whisper",
+    "groq",
+    "electron",
+    "clipboard",
+    "desktop"
+  ],
   "main": "main.js",
   "scripts": {
     "start": "electron .",
