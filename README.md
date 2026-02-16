@@ -20,9 +20,12 @@ Built with Electron. Powered by [Groq](https://groq.com/) (Whisper + Llama 3.70b
 
 ## Download
 
-Head to the [Releases](https://github.com/kunalsahu20/speech-to-clipboard/releases) page and download the latest `.exe`.
+Head to the [Releases](https://github.com/kunalsahu20/speech-to-clipboard/releases) page and download `Speech-to-Cursor-v1.0.0-win-x64.zip`.
 
-No installation required — just run the executable.
+1. **Extract** the zip file.
+2. Open the folder and run `Speech to Cursor.exe`.
+
+> **Note:** If Windows SmartScreen says "Windows protected your PC", click **More info** → **Run anyway**. This appears because the app is not code-signed (which costs ~$400/year). The app is safe and open source.
 
 ---
 
@@ -41,6 +44,16 @@ No installation required — just run the executable.
 3. You can update the key anytime by right-clicking the tray icon and selecting **Set API Key**.
 
 Your API key is stored locally on your machine using encrypted storage. It is never sent anywhere except directly to the Groq API over HTTPS.
+
+## Troubleshooting
+
+### "Windows protected your PC" / Virus Warning
+This is Microsoft Defender SmartScreen flagging the app because it enters the "unknown publisher" category (no code signing certificate).
+- **Solution:** Click **More info** → **Run anyway**.
+
+### "Invalid file descriptor to ICU data received"
+This error means you tried to run the `.exe` without its dependency files. Electron apps need the full folder to run.
+- **Solution:** Make sure you extract the **entire .zip file** and run the executable from inside the folder. Do not move the `.exe` file out of the folder.
 
 ---
 
