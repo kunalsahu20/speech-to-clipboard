@@ -1,0 +1,38 @@
+{
+  "name": "speech-to-cursor",
+  "version": "1.0.0",
+  "description": "System tray tool — record speech, transcribe with Groq Whisper + LLM, paste at cursor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "build": {
+    "appId": "com.speechtocursor.app",
+    "productName": "Speech to Cursor",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "overlay.html",
+      "overlay.css",
+      "overlay.js",
+      "assets/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^40.4.1",
+    "electron-builder": "^26.7.0"
+  },
+  "dependencies": {
+    "electron-store": "^11.0.2"
+  }
+}

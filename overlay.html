@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speech to Cursor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="overlay.css" />
+</head>
+
+<body>
+    <div class="overlay-bar" id="overlayBar">
+        <!-- Record/Stop Button -->
+        <button id="recordBtn" class="rec-btn" title="Record">
+            <span class="rec-icon" id="recIcon">🎙️</span>
+        </button>
+
+        <!-- Waveform -->
+        <canvas id="waveform" class="waveform"></canvas>
+
+        <!-- Status -->
+        <span class="status" id="status">Ready</span>
+
+        <!-- Close Button -->
+        <button id="closeBtn" class="close-btn" title="Close (Esc)">✕</button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-text">Copied & pasted at cursor!</span>
+    </div>
+
+    <script src="overlay.js"></script>
+</body>
+
+</html>
