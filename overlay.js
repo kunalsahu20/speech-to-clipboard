@@ -58,10 +58,6 @@ window.electronAPI.onResetUI(() => {
     resetUI();
 });
 
-window.electronAPI.onCheckRecordingStatus(() => {
-    window.electronAPI.sendRecordingStatus(isRecording);
-});
-
 // ── Recording ──────────────────────────────────────────────
 async function startRecording() {
     try {
@@ -94,6 +90,7 @@ async function startRecording() {
     } catch (err) {
         console.error("Mic error:", err);
         setStatus("Mic error", "error");
+        showToast("❌", `Microphone error: ${err.message}`);
     }
 }
 
@@ -137,6 +134,7 @@ async function handleRecordingStop() {
 
         if (!rawText.trim()) {
             setStatus("No speech", "error");
+            showToast("⚠️", "No speech detected. Try again.");
             return;
         }
 
@@ -153,10 +151,12 @@ async function handleRecordingStop() {
             showToast("✅", "Copied & pasted at cursor!");
         } else {
             setStatus("Paste failed", "error");
+            showToast("❌", "Failed to paste text.");
         }
     } catch (err) {
         console.error("Pipeline error:", err);
         setStatus("Error!", "error");
+        showToast("❌", err.message || "Something went wrong.");
     } finally {
         isProcessing = false;
         recordBtn.classList.remove("processing");

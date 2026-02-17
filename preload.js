@@ -21,18 +21,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     /** Close the key input window */
     closeKeyWindow: () => ipcRenderer.send("close-key-window"),
 
-    /** Listen for UI reset command from main process */
+    /**
+     * Listen for UI reset command from main process.
+     * Removes previous listeners before registering to prevent stacking.
+     */
     onResetUI: (callback) => {
+        ipcRenderer.removeAllListeners("reset-ui");
         ipcRenderer.on("reset-ui", () => callback());
-    },
-
-    /** Listen for recording status check from main process */
-    onCheckRecordingStatus: (callback) => {
-        ipcRenderer.on("check-recording-status", () => callback());
-    },
-
-    /** Respond with recording status */
-    sendRecordingStatus: (isRecording) => {
-        ipcRenderer.send("recording-status-response", isRecording);
     },
 });

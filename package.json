@@ -41,7 +41,8 @@
       "overlay.html",
       "overlay.css",
       "overlay.js",
-      "assets/**/*"
+      "assets/**/*",
+      "src/**/*"
     ]
   },
   "devDependencies": {
