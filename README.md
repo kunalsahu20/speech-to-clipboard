@@ -8,14 +8,27 @@ Built with Electron. Powered by [Groq](https://groq.com/) (Whisper + Llama 3.70b
 
 ## How It Works
 
-1. Press **Alt + .** (or click the system tray icon) to open the overlay.
-2. Click the microphone button to start recording.
-3. Speak naturally — the app records your voice.
-4. Click stop. The audio is sent to the Groq API:
+1. Place your cursor in any text area (Notepad, Chrome, VS Code, etc.).
+2. Press **Alt + .** to open the overlay.
+3. Click the microphone button to start recording.
+4. Speak naturally, then click stop. The audio is sent to the Groq API:
    - **Whisper** transcribes the speech to raw text.
    - **Llama 3.70b** corrects grammar, punctuation, and formatting.
-5. The corrected text is copied to your clipboard and automatically pasted at your cursor.
+5. The corrected text is **automatically pasted at your cursor** — no need to click back into the text area.
 
+The app remembers which window you were in before opening the overlay and restores focus to it before pasting.
+
+---
+
+## Multi-Window Support
+
+The app uses the Win32 API (`GetForegroundWindow` / `SetForegroundWindow`) to track your active window:
+
+- When you press `Alt + .`, the app saves the **window handle** of whatever application was in focus.
+- After transcription, it brings that exact window back to the foreground and simulates `Ctrl+V`.
+- This works across any number of open windows. The text always goes back to where you were typing.
+
+> **Important:** Place your cursor in the target text area *before* pressing the hotkey. The app restores the window, not the cursor position within it — the OS preserves cursor position automatically when a window regains focus.
 ---
 
 ## Download

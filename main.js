@@ -58,9 +58,9 @@ async function getStore() {
 let tray = null;
 let overlayWindow = null;
 let isOverlayVisible = false;
-
+let targetWindowHandle = null;
 const SHORTCUT = "Alt+.";
-const OVERLAY_WIDTH = 420;
+const OVERLAY_WIDTH = 520;
 const OVERLAY_HEIGHT = 140;
 
 // ── Single Instance Lock ───────────────────────────────────
@@ -311,6 +311,9 @@ function toggleOverlay() {
 function showOverlay() {
     if (!overlayWindow) return;
 
+    // Capture the currently focused window BEFORE stealing focus
+    captureTargetWindow();
+
     // Re-center at top of primary display
     const primaryDisplay = screen.getPrimaryDisplay();
     const { width: screenWidth } = primaryDisplay.workAreaSize;
@@ -374,11 +377,14 @@ ipcMain.handle("paste-text", async (_event, text) => {
         // Step 1: Write to clipboard
         clipboard.writeText(text);
 
-        // Step 2: Hide overlay so target app gets focus
+        // Step 2: Hide overlay
         hideOverlay();
 
-        // Step 3: Wait for focus to settle, then simulate paste
-        await sleep(200);
+        // Step 3: Restore focus to the window user was typing in
+        await restoreTargetWindow();
+
+        // Step 4: Wait for focus to settle, then simulate paste
+        await sleep(150);
 
         await simulatePaste();
 
@@ -419,6 +425,54 @@ function simulatePaste() {
                 } else {
                     resolve();
                 }
+            }
+        );
+    });
+}
+
+/**
+ * Captures the foreground window handle BEFORE the overlay steals focus.
+ * This lets us restore focus to the user's target app after transcription.
+ */
+function captureTargetWindow() {
+    try {
+        const result = require("child_process").execSync(
+            'powershell -NoProfile -NonInteractive -Command "' +
+            "Add-Type -MemberDefinition '[DllImport(\\\"user32.dll\\\")] public static extern IntPtr GetForegroundWindow();' " +
+            "-Name Win32 -Namespace Temp -PassThru | Out-Null; " +
+            '[Temp.Win32]::GetForegroundWindow()"',
+            { timeout: 3000 }
+        ).toString().trim();
+        targetWindowHandle = result;
+        console.log("[SpeechToCursor] Captured target window:", targetWindowHandle);
+    } catch (err) {
+        console.warn("[SpeechToCursor] Could not capture window handle:", err.message);
+        targetWindowHandle = null;
+    }
+}
+
+/**
+ * Restores focus to the window the user was typing in before the overlay appeared.
+ */
+function restoreTargetWindow() {
+    return new Promise((resolve) => {
+        if (!targetWindowHandle) {
+            resolve();
+            return;
+        }
+        const psScript =
+            "Add-Type -MemberDefinition '[DllImport(\\\"user32.dll\\\")] public static extern bool SetForegroundWindow(IntPtr hWnd);' " +
+            "-Name Win32 -Namespace Temp2 -PassThru | Out-Null; " +
+            `[Temp2.Win32]::SetForegroundWindow([IntPtr]${targetWindowHandle})`;
+
+        exec(
+            `powershell -NoProfile -NonInteractive -Command "${psScript}"`,
+            { timeout: 3000 },
+            (error) => {
+                if (error) {
+                    console.warn("[SpeechToCursor] Could not restore focus:", error.message);
+                }
+                resolve();
             }
         );
     });
